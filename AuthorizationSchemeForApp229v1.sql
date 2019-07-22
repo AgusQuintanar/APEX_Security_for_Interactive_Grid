@@ -3,7 +3,7 @@ FROM  DUAL
 WHERE  
     (SELECT ID
         FROM SEG_OPCIONES
-        WHERE PAGINA = :APP_PAGE
+        WHERE PAGINA = :APP_PAGE_ID
     )
     IN    
     (SELECT usopc.SEG_OPCIONES_ID --Selecciona todos los ids de permisos que posee el usuario donde pueda consultar  
