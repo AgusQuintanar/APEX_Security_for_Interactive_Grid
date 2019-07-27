@@ -10,9 +10,16 @@ IS
     CURSOR Cur_Permisos IS 
         SELECT 1 FROM  DUAL
         WHERE  
-            (SELECT ID
-                FROM SEG_OPCIONES
-                WHERE PAGINA = num_pagina
+            (SELECT ID_PERMISO
+                FROM SEG_TI_PERMISO
+                WHERE   (
+                        (upper(ti_permiso) = 'CONSULTA' and PAG_CONSULTA = num_pagina) or
+                        (upper(ti_permiso) = 'EDITAR' and PAG_EDITAR = num_pagina) or
+                        (upper(ti_permiso) = 'CANCELAR' and PAG_CANCELAR = num_pagina) or
+                        (upper(ti_permiso) = 'ALTA' and PAG_ALTA = num_pagina) or
+                        (upper(ti_permiso) = 'PERMISO5' and PAG_PERMISO5 = num_pagina) or
+                        (upper(ti_permiso) = 'PERMISO6' and PAG_PERMISO6 = num_pagina)
+                    )
             )
             IN    
             (SELECT usopc.SEG_OPCIONES_ID 
@@ -45,7 +52,7 @@ BEGIN
     Dbms_output.put_line(C_Permisos);
     CLOSE Cur_Permisos;
 
-    RETURN C_Permisos = 1;
+    RETURN C_Permisos = 1; --Como el Query regresa 1 si es verdadero, este se compara. Y explicitamente si son iguales retorna True, y si no retorna False.
 
     
 END;
