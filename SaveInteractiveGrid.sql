@@ -1,7 +1,11 @@
+
+
 declare
   var_id_repetido number;
 
 begin 
+
+
      select count(*)
      into   var_id_repetido
      from   SEG_USUARIOS_OPC
@@ -9,14 +13,30 @@ begin
      
      case :APEX$ROW_STATUS 
      when 'C' then -- Note: In EA2 this has been changed from I to C for consistency with Tabular Forms
-     
-        insert into SEG_USUARIOS_OPC (SEG_USUARIOS_ID, SEG_OPCIONES_ID, CONSULTA, EDIT, ALTA, CAN, PERMISO5, PERMISO6) 
-        values (:P23_ID, :ID, :CONSULTA, :EDIT, :ALTA, :CAN, :PERMISO5, :PERMISO6 ) 
-        returning ROWID into :ROWID; 
+         
+         
+         IF :EDIT = 'S' AND :CONSULTA = 'N' THEN
+            apex_error.add_error (
+            p_message => 'No se puede tener permiso de Editar sin tener permiso de Consulta',
+            p_display_location => apex_error.c_inline_in_notification);
+         ELSE 
+         
+            insert into SEG_USUARIOS_OPC (SEG_USUARIOS_ID, SEG_OPCIONES_ID, CONSULTA, EDIT, ALTA, CAN, PERMISO5, PERMISO6) 
+            values (:P23_ID, :ID, :CONSULTA, :EDIT, :ALTA, :CAN, :PERMISO5, :PERMISO6 ) 
+            returning ROWID into :ROWID; 
+            
+         END IF;
 
      when 'U' then 
+     
+     
+      IF :EDIT = 'S' AND :CONSULTA = 'N' THEN
+            apex_error.add_error (
+            p_message => 'No se puede tener permiso de Editar sin tener permiso de Consulta',
+            p_display_location => apex_error.c_inline_in_notification);
+       
       
-     IF var_id_repetido = 0 AND (:CONSULTA == 'S' OR :EDIT == 'S' OR :ALTA == 'S' OR :CAN == 'S' OR :PERMISO5 == 'S' OR :PERMISO6 == 'S') THEN 
+     ELSIF var_id_repetido = 0 AND (:CONSULTA = 'S' OR :EDIT = 'S' OR :ALTA = 'S' OR :CAN = 'S' OR :PERMISO5 = 'S' OR :PERMISO6 = 'S') THEN 
              insert into SEG_USUARIOS_OPC (SEG_USUARIOS_ID, SEG_OPCIONES_ID, CONSULTA, EDIT, ALTA, CAN, PERMISO5, PERMISO6) 
                values (:P23_ID, :ID, :CONSULTA, :EDIT, :ALTA, :CAN, :PERMISO5, :PERMISO6);
                
