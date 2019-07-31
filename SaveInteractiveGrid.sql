@@ -5,7 +5,6 @@ declare
 
 begin 
 
-
      select count(*)
      into   var_id_repetido
      from   SEG_USUARIOS_OPC
